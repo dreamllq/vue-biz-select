@@ -63,7 +63,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/dreamllq/vue-biz-select.git"
   },
   "keywords": [
     "vue",
