@@ -1,0 +1,1 @@
+export type ModelValueType = number | string;

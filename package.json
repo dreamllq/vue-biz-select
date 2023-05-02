@@ -1,14 +1,14 @@
 {
-  "name": "vite-vue3-ts-component-template",
-  "description": "模板",
-  "version": "0.0.0",
+  "name": "lc-vue-biz-select",
+  "description": "远程选择器",
+  "version": "1.0.7",
   "type": "module",
-  "main": "./dist/vite-vue3-ts-component-template.umd.cjs",
-  "module": "./dist/vite-vue3-ts-component-template.js",
+  "main": "./dist/vue-biz-select.umd.cjs",
+  "module": "./dist/vue-biz-select.js",
   "exports": {
     ".": {
-      "import": "./dist/vite-vue3-ts-component-template.js",
-      "require": "./dist/vite-vue3-ts-component-template.umd.cjs"
+      "import": "./dist/vue-biz-select.js",
+      "require": "./dist/vue-biz-select.umd.cjs"
     }
   },
   "files": [
