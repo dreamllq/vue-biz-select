@@ -1,7 +1,7 @@
 {
   "name": "lc-vue-biz-select",
   "description": "远程选择器",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "type": "module",
   "main": "./dist/vue-biz-select.umd.cjs",
   "module": "./dist/vue-biz-select.js",
