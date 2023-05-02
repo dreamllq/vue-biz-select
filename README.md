@@ -1,5 +1,7 @@
 # lc-vue-biz-select
 
+异步数据选择器
+
 ## 安装
 
 ```
@@ -60,5 +62,6 @@ const fetchData = async ()=>{
 ### Events
 
 | 事件名 | 说明 | 类型 |
+| ---- | ---- | ---- |
 | update:modelValue | 选中值变化 | 多选：string[] \| number[] ; 单选：string \| number |
 | update:label | 选中文案变化 | string |
