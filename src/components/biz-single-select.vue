@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, reactive, computed, PropType } from 'vue'; 
-import { ModelValueType } from '../types';
+import { FetchDataType, ModelValueType } from '../types';
 
 const props = defineProps({
   modelValue: {
@@ -27,7 +27,7 @@ const props = defineProps({
     default: '请选择'
   },
   fetchData: {
-    type: Function,
+    type: Function as PropType<FetchDataType>,
     default: () => []
   },
   filterable: {

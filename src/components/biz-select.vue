@@ -22,13 +22,13 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-import { ModelValueType } from '../types';
+import { FetchDataType, ModelValueType } from '../types';
 import BizMultipleSelect from './biz-multiple-select.vue';
 import BizSingleSelect from './biz-single-select.vue';
 
 defineProps({
   fetchData: {
-    type: Function,
+    type: Function as PropType<FetchDataType>,
     default: () => []
   },
   modelValue: {
