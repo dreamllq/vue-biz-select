@@ -55,6 +55,12 @@ const fetchData = async ()=>{
 </template>
 ```
 
+## 单选
+
+### 远程数据
+
+<RemoteSingle />
+
 ## Api
 
 ### Attributes

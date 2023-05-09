@@ -28,9 +28,18 @@
           multiple
           :collapse-tags='oneLine'
           clearable
+          :remote='remote'
+          :remote-method='remoteMethod'
           :disabled='disabled'
           :filterable='filterable'
+          :loading='loading'
           @update:model-value='onUpdateModelValue'
+          @change='onChange'
+          @blur='onBlur'
+          @focus='onFocus'
+          @clear='onClear'
+          @visible-change='onVisibleChange'
+          @remove-tag='onRemoveTag'
         />
         <el-button v-else loading />
       </template>
@@ -40,7 +49,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, reactive, computed, PropType } from 'vue'; 
-import { cloneDeep, differenceWith, isEqual } from 'lodash';
+import { cloneDeep, debounce, differenceWith, isEqual } from 'lodash';
 import { FetchDataType, ModelValueType } from '../types';
 
 const props = defineProps({
@@ -67,10 +76,25 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  remote: {
+    type: Boolean,
+    default: false
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'update:label']);
+const emit = defineEmits([
+  'update:modelValue',
+  'update:label',
+  'change',
+  'blur',
+  'focus',
+  'clear',
+  'visible-change',
+  'remove-tag'
+]);
+
+const loading = ref(false);
 const ready = ref(false);
 const selectData:{
   selected: ModelValueType[],
@@ -116,6 +140,44 @@ const onUpdateModelValue = (newValue: ModelValueType[]) => {
 const onClose = (item:{value: number|string}) => {
   selectData.selected = selectData.selected.filter(id => id !== item.value);
   emit('update:modelValue', cloneDeep(selectData.selected));
+};
+
+const onChange = (val: any) => {
+  emit('change', val);
+};
+
+const onBlur = (event: FocusEvent) => {
+  emit('blur', event);
+};
+
+const onFocus = (event: FocusEvent) => {
+  loading.value = true;
+  fetchDataDebounce();
+  emit('focus', event);
+};
+
+const onClear = async () => {
+  emit('clear');
+};
+
+const onVisibleChange = (val: any) => {
+  emit('visible-change', val);
+};
+
+const onRemoveTag = (val: any) => {
+  emit('remove-tag', val);
+};
+
+const fetchDataDebounce = debounce(async (query?: string) => {
+  const res = await props.fetchData(query);
+  selectData.options = res;
+  loading.value = false;
+}, 300);
+
+const remoteMethod = (query: string) => {
+  if (!props.remote) return;
+  loading.value = true;
+  fetchDataDebounce(query);
 };
 
 </script>
