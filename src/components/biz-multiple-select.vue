@@ -94,6 +94,8 @@ const emit = defineEmits([
   'remove-tag'
 ]);
 
+let filterContent = '';
+let searchFlag = false;
 const loading = ref(false);
 const ready = ref(false);
 const selectData:{
@@ -103,7 +105,15 @@ const selectData:{
   selected: [],
   options: [] 
 });
-const tooltipList = computed(() => selectData.selected.map(selectedValue => selectData.options.find(item => item.value === selectedValue)!));
+const selectedLabelMap:{[index: string]: string} = {};
+
+const tooltipList = computed<{
+    value: number | string;
+    label: string;
+}[]>(() => selectData.selected.map(selectedValue => ({
+  value: selectedValue,
+  label: selectedLabelMap[selectedValue]
+})));
 
 watch(() => props.modelValue, (newValue) => {
   if (newValue!.length !== selectData.selected.length || differenceWith(newValue, selectData.selected, isEqual).length > 0) {
@@ -112,14 +122,13 @@ watch(() => props.modelValue, (newValue) => {
   return;
 });
 
-const selectedLabel = computed(() => selectData.selected.map(value => {
-  const result = selectData.options.find((option => option.value === value));
-  if (result === undefined) {
-    return undefined;
-  } else {
-    return result.label;
-  }
-}));
+watch(() => selectData.options, () => {
+  selectData.options.forEach(item => {
+    selectedLabelMap[item.value] = item.label;
+  });
+}, { deep: true });
+
+const selectedLabel = computed(() => selectData.selected.map(value => selectedLabelMap[value]));
 
 watch(selectedLabel, (value) => {
   emit('update:label', cloneDeep(value));
@@ -151,8 +160,6 @@ const onBlur = (event: FocusEvent) => {
 };
 
 const onFocus = (event: FocusEvent) => {
-  loading.value = true;
-  fetchDataDebounce();
   emit('focus', event);
 };
 
@@ -161,6 +168,12 @@ const onClear = async () => {
 };
 
 const onVisibleChange = (val: any) => {
+  if (val === true && searchFlag === true) {
+    searchFlag = false;
+    remoteMethod(''); 
+  } else if (val === false) {
+    searchFlag = filterContent !== '';
+  }
   emit('visible-change', val);
 };
 
@@ -176,6 +189,7 @@ const fetchDataDebounce = debounce(async (query?: string) => {
 
 const remoteMethod = (query: string) => {
   if (!props.remote) return;
+  filterContent = query;
   loading.value = true;
   fetchDataDebounce(query);
 };

@@ -61,6 +61,12 @@ const fetchData = async ()=>{
 
 <RemoteSingle />
 
+## 多选
+
+### 远程数据
+
+<RemoteMultiple />
+
 ## Api
 
 ### Attributes

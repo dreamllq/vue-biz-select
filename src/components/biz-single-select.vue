@@ -69,6 +69,8 @@ const emit = defineEmits([
   'remove-tag'
 ]);
 
+let filterContent = '';
+let searchFlag = false;
 const loading = ref(false);
 const ready = ref(false);
 const selectData:{
@@ -81,19 +83,19 @@ const selectData:{
   selected: undefined,
   options: [] 
 });
+const selectedLabelMap:{[index: ModelValueType]: string} = {};
 
 watch(() => props.modelValue, (newValue) => {
   selectData.selected = newValue;
 });
 
-const selectedLabel = computed(() => {
-  const item = selectData.options.find(option => option.value === selectData.selected);
-  if (item === undefined) {
-    return undefined;
-  } else {
-    return item.label;
-  }
-});
+watch(() => selectData.options, () => {
+  selectData.options.forEach(item => {
+    selectedLabelMap[item.value] = item.label;
+  });
+}, { deep: true });
+
+const selectedLabel = computed(() => selectedLabelMap[selectData.selected!]);
 
 watch(selectedLabel, (value) => {
   emit('update:label', value);
@@ -124,8 +126,6 @@ const onBlur = async (event: FocusEvent) => {
 };
 
 const onFocus = (event: FocusEvent) => {
-  loading.value = true;
-  fetchDataDebounce();
   emit('focus', event);
 };
 
@@ -134,6 +134,12 @@ const onClear = async () => {
 };
 
 const onVisibleChange = (val: any) => {
+  if (val === true && searchFlag === true) {
+    searchFlag = false;
+    remoteMethod(''); 
+  } else if (val === false) {
+    searchFlag = filterContent !== '';
+  }
   emit('visible-change', val);
 };
 
@@ -149,6 +155,7 @@ const fetchDataDebounce = debounce(async (query?:string) => {
 
 const remoteMethod = async (query: string) => {
   if (!props.remote) return;
+  filterContent = query;
   loading.value = true;
   fetchDataDebounce(query);
 };

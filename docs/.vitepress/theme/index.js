@@ -5,6 +5,7 @@ import Layout from './layout.vue'
 import NotFound from './not-found.vue'
 import DefaultTheme from 'vitepress/theme'
 import RemoteSingle from '@components/remote-single.vue'
+import RemoteMultiple from '@components/remote-multiple.vue'
 
 export default {
   ...DefaultTheme,
@@ -13,5 +14,6 @@ export default {
   enhanceApp({ app, router, siteData }) {
     app.use(ElementPlus);
     app.component('RemoteSingle', RemoteSingle)
+    app.component('RemoteMultiple', RemoteMultiple)
   }
 };
