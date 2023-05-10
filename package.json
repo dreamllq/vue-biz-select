@@ -1,7 +1,7 @@
 {
   "name": "lc-vue-biz-select",
   "description": "异步数据选择器",
-  "version": "1.0.12",
+  "version": "1.1.0",
   "type": "module",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
