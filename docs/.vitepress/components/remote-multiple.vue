@@ -72,8 +72,8 @@ const list = states.map((item) => ({
   label: `label:${item}` 
 }));
 
-const value1 = ref();
-const label1 = ref();
+const value1 = ref([]);
+const label1 = ref([]);
 const loading = ref(false);
 
 const fetchData = (query = '') => new Promise(resolve => {
