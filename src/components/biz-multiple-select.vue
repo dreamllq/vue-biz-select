@@ -198,7 +198,7 @@ const emit = defineEmits([
 
 let filterContent = '';
 let searchFlag = false;
-let isVisible = false;
+// let isVisible = false;
 let isFocus = false;
 const loading = ref(false);
 const ready = ref(false);
@@ -274,7 +274,7 @@ const onClear = async () => {
 };
 
 const onVisibleChange = (val: any) => {
-  isVisible = val;
+  // isVisible = val;
 
   if (props.remote) {
     if (val === true && searchFlag === true) {
