@@ -296,7 +296,6 @@ const fetchDataDebounce = asyncDebounce(async (query?: string) => {
   if (isFocus === true) {
     selectData.options = res;
   }
-  await nextTick();
 }, 300);
 
 const remoteMethod = async (query: string) => {
