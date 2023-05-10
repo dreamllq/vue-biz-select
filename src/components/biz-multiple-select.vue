@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, reactive, computed, PropType, nextTick } from 'vue'; 
-import { cloneDeep, debounce, differenceWith, isEqual, defer } from 'lodash';
+import { cloneDeep, differenceWith, isEqual } from 'lodash';
 import { FetchDataType, ModelValueType } from '../types';
 import asyncDebounce from 'simple-async-debounce';
 
