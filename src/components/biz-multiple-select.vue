@@ -27,12 +27,29 @@
           :placeholder='placeholder'
           multiple
           :collapse-tags='oneLine'
-          clearable
           :remote='remote'
           :remote-method='remoteMethod'
           :disabled='disabled'
           :filterable='filterable'
           :loading='loading'
+          :multiple-limit='multipleLimit'
+          :value-key='valueKey'
+          :size='size'
+          :clearable='clearable'
+          :name='name'
+          :effect='effect'
+          :autocomplete='autocomplete'
+          :reserve-keyword='reserveKeyword'
+          :no-data-text='noDataText'
+          :popper-class='popperClass'
+          :teleported='teleported'
+          :persistent='persistent'
+          :popper-options='popperOptions'
+          :automatic-dropdown='automaticDropdown'
+          :height='height'
+          :scrollbar-always-on='scrollbarAlwaysOn'
+          :validate-event='validateEvent'
+          :placement='placement'
           @update:model-value='onUpdateModelValue'
           @change='onChange'
           @blur='onBlur'
@@ -40,7 +57,19 @@
           @clear='onClear'
           @visible-change='onVisibleChange'
           @remove-tag='onRemoveTag'
-        />
+        >
+          <template v-if='$slots.default' #default='scope'>
+            <slot v-bind='scope' />
+          </template>
+
+          <template v-if='$slots.empty' #empty>
+            <slot name='empty' />
+          </template>
+
+          <template v-if='$slots.prefix' #prefix>
+            <slot name='prefix' />
+          </template>
+        </el-select-v2>
         <el-button v-else loading />
       </template>
     </el-popover>
@@ -49,7 +78,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, reactive, computed, PropType } from 'vue'; 
-import { cloneDeep, debounce, differenceWith, isEqual } from 'lodash';
+import { cloneDeep, debounce, differenceWith, isEqual, defer } from 'lodash';
 import { FetchDataType, ModelValueType } from '../types';
 
 const props = defineProps({
@@ -57,17 +86,9 @@ const props = defineProps({
     type: Array as PropType<ModelValueType[]>,
     default: () => []
   },
-  placeholder: {
-    type: String,
-    default: '请选择'
-  },
   fetchData: {
     type: Function as PropType<FetchDataType>,
     default: () => []
-  },
-  filterable: {
-    type: Boolean,
-    default: false
   },
   oneLine: {
     type: Boolean,
@@ -77,9 +98,89 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  valueKey: {
+    type: String,
+    default: undefined
+  },
+  size: {
+    type: String as PropType<'large' | 'default' | 'small'>,
+    default: 'default'
+  },
+  clearable: {
+    type: Boolean,
+    default: true
+  },
+  multipleLimit: {
+    type: Number,
+    default: 0
+  },
+  name: {
+    type: String,
+    default: undefined
+  },
+  effect: {
+    type: String as PropType<'dark' | 'light'>,
+    default: 'light'
+  },
+  autocomplete: {
+    type: String,
+    default: 'off'
+  },
+  placeholder: {
+    type: String,
+    default: '请选择'
+  },
+  filterable: {
+    type: Boolean,
+    default: false
+  },
+  reserveKeyword: {
+    type: Boolean,
+    default: true
+  },
+  noDataText: {
+    type: String,
+    default: '无数据'
+  },
+  popperClass: {
+    type: String,
+    default: undefined
+  },
+  teleported: {
+    type: Boolean,
+    default: true
+  },
+  persistent: {
+    type: Boolean,
+    default: true
+  },
+  popperOptions: {
+    type: Object,
+    default: undefined
+  },
+  automaticDropdown: {
+    type: Boolean,
+    default: false
+  },
+  height: {
+    type: Number,
+    default: undefined
+  },
+  scrollbarAlwaysOn: {
+    type: Boolean,
+    default: false
+  },
   remote: {
     type: Boolean,
     default: false
+  },
+  validateEvent: {
+    type: Boolean,
+    default: true
+  },
+  placement: {
+    type: String,
+    default: undefined
   }
 });
 
@@ -96,6 +197,7 @@ const emit = defineEmits([
 
 let filterContent = '';
 let searchFlag = false;
+let isVisible = false;
 const loading = ref(false);
 const ready = ref(false);
 const selectData:{
@@ -156,6 +258,7 @@ const onChange = (val: any) => {
 };
 
 const onBlur = (event: FocusEvent) => {
+  isVisible = false;
   emit('blur', event);
 };
 
@@ -168,6 +271,7 @@ const onClear = async () => {
 };
 
 const onVisibleChange = (val: any) => {
+  isVisible = val;
   if (val === true && searchFlag === true) {
     searchFlag = false;
     remoteMethod(''); 
@@ -183,7 +287,12 @@ const onRemoveTag = (val: any) => {
 
 const fetchDataDebounce = debounce(async (query?: string) => {
   const res = await props.fetchData(query);
-  selectData.options = res;
+
+  defer(() => {
+    if (isVisible === true) {
+      selectData.options = res;
+    }
+  });
   loading.value = false;
 }, 300);
 
@@ -197,7 +306,6 @@ const remoteMethod = (query: string) => {
 </script>
 
 <style lang="scss" scoped>
-
 .selected-tag{
   margin: 0 4px 4px 0;
   max-width:170px;

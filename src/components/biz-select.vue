@@ -8,6 +8,23 @@
     :disabled='disabled'
     :select-first='selectFirst'
     :remote='remote'
+    :value-key='valueKey'
+    :size='size'
+    :clearable='clearable'
+    :name='name'
+    :effect='effect'
+    :autocomplete='autocomplete'
+    :reserve-keyword='reserveKeyword'
+    :no-data-text='noDataText'
+    :popper-class='popperClass'
+    :teleported='teleported'
+    :persistent='persistent'
+    :popper-options='popperOptions'
+    :automatic-dropdown='automaticDropdown'
+    :height='height'
+    :scrollbar-always-on='scrollbarAlwaysOn'
+    :validate-event='validateEvent'
+    :placement='placement'
     @update:model-value='onUpdateModelValue'
     @update:label='onUpdateLabel' 
     @change='onChange' 
@@ -16,7 +33,19 @@
     @clear='onClear'
     @visible-change='onVisibleChange'
     @remove-tag='onRemoveTag'
-  />
+  >
+    <template v-if='$slots.default' #default='scope'>
+      <slot v-bind='scope' />
+    </template>
+
+    <template v-if='$slots.empty' #empty>
+      <slot name='empty' />
+    </template>
+
+    <template v-if='$slots.prefix' #prefix>
+      <slot name='prefix' />
+    </template>
+  </biz-single-select>
   <biz-multiple-select
     v-else
     :model-value='modelValue as ModelValueType[]'
@@ -27,6 +56,24 @@
     :disabled='disabled'
     :select-first='selectFirst'
     :remote='remote'
+    :multiple-limit='multipleLimit'
+    :value-key='valueKey'
+    :size='size'
+    :clearable='clearable'
+    :name='name'
+    :effect='effect'
+    :autocomplete='autocomplete'
+    :reserve-keyword='reserveKeyword'
+    :no-data-text='noDataText'
+    :popper-class='popperClass'
+    :teleported='teleported'
+    :persistent='persistent'
+    :popper-options='popperOptions'
+    :automatic-dropdown='automaticDropdown'
+    :height='height'
+    :scrollbar-always-on='scrollbarAlwaysOn'
+    :validate-event='validateEvent'
+    :placement='placement'
     @update:model-value='onUpdateModelValue'
     @update:label='onUpdateLabel'
     @change='onChange' 
@@ -35,7 +82,19 @@
     @clear='onClear'
     @visible-change='onVisibleChange'
     @remove-tag='onRemoveTag'
-  />
+  >
+    <template v-if='$slots.default' #default='scope'>
+      <slot v-bind='scope' />
+    </template>
+
+    <template v-if='$slots.empty' #empty>
+      <slot name='empty' />
+    </template>
+
+    <template v-if='$slots.prefix' #prefix>
+      <slot name='prefix' />
+    </template>
+  </biz-multiple-select>
 </template>
 
 <script setup lang="ts">
@@ -49,6 +108,14 @@ defineProps({
     type: Function as PropType<FetchDataType>,
     default: () => []
   },
+  oneLine: {
+    type: Boolean,
+    default: false
+  },
+  selectFirst: {
+    type: Boolean,
+    default: false
+  },
   modelValue: {
     type: [
       Array,
@@ -57,19 +124,7 @@ defineProps({
     ] as PropType<ModelValueType | ModelValueType[]>,
     default: undefined
   },
-  placeholder: {
-    type: String,
-    default: '请选择'
-  },
   multiple: {
-    type: Boolean,
-    default: false
-  },
-  filterable: {
-    type: Boolean,
-    default: false
-  },
-  oneLine: {
     type: Boolean,
     default: false
   },
@@ -77,13 +132,89 @@ defineProps({
     type: Boolean,
     default: false
   },
-  selectFirst: {
+  valueKey: {
+    type: String,
+    default: undefined
+  },
+  size: {
+    type: String as PropType<'large' | 'default' | 'small'>,
+    default: 'default'
+  },
+  clearable: {
+    type: Boolean,
+    default: true
+  },
+  multipleLimit: {
+    type: Number,
+    default: 0
+  },
+  name: {
+    type: String,
+    default: undefined
+  },
+  effect: {
+    type: String as PropType<'dark' | 'light'>,
+    default: 'light'
+  },
+  autocomplete: {
+    type: String,
+    default: 'off'
+  },
+  placeholder: {
+    type: String,
+    default: '请选择'
+  },
+  filterable: {
+    type: Boolean,
+    default: false
+  },
+  reserveKeyword: {
+    type: Boolean,
+    default: true
+  },
+  noDataText: {
+    type: String,
+    default: '无数据'
+  },
+  popperClass: {
+    type: String,
+    default: undefined
+  },
+  teleported: {
+    type: Boolean,
+    default: true
+  },
+  persistent: {
+    type: Boolean,
+    default: true
+  },
+  popperOptions: {
+    type: Object,
+    default: undefined
+  },
+  automaticDropdown: {
+    type: Boolean,
+    default: false
+  },
+  height: {
+    type: Number,
+    default: undefined
+  },
+  scrollbarAlwaysOn: {
     type: Boolean,
     default: false
   },
   remote: {
     type: Boolean,
     default: false
+  },
+  validateEvent: {
+    type: Boolean,
+    default: true
+  },
+  placement: {
+    type: String,
+    default: undefined
   }
 });
 
