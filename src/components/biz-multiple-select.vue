@@ -77,9 +77,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, reactive, computed, PropType } from 'vue'; 
+import { onMounted, ref, watch, reactive, computed, PropType, nextTick } from 'vue'; 
 import { cloneDeep, debounce, differenceWith, isEqual, defer } from 'lodash';
 import { FetchDataType, ModelValueType } from '../types';
+import asyncDebounce from 'simple-async-debounce';
 
 const props = defineProps({
   modelValue: {
@@ -198,6 +199,7 @@ const emit = defineEmits([
 let filterContent = '';
 let searchFlag = false;
 let isVisible = false;
+let isFocus = false;
 const loading = ref(false);
 const ready = ref(false);
 const selectData:{
@@ -258,11 +260,12 @@ const onChange = (val: any) => {
 };
 
 const onBlur = (event: FocusEvent) => {
-  isVisible = false;
+  isFocus = false;
   emit('blur', event);
 };
 
 const onFocus = (event: FocusEvent) => {
+  isFocus = true;
   emit('focus', event);
 };
 
@@ -272,11 +275,14 @@ const onClear = async () => {
 
 const onVisibleChange = (val: any) => {
   isVisible = val;
-  if (val === true && searchFlag === true) {
-    searchFlag = false;
-    remoteMethod(''); 
-  } else if (val === false) {
-    searchFlag = filterContent !== '';
+
+  if (props.remote) {
+    if (val === true && searchFlag === true) {
+      remoteMethod(''); 
+    } else if (val === false) {
+      searchFlag = filterContent !== '';
+      filterContent = '';
+    }
   }
   emit('visible-change', val);
 };
@@ -285,22 +291,20 @@ const onRemoveTag = (val: any) => {
   emit('remove-tag', val);
 };
 
-const fetchDataDebounce = debounce(async (query?: string) => {
+const fetchDataDebounce = asyncDebounce(async (query?: string) => {
   const res = await props.fetchData(query);
-
-  defer(() => {
-    if (isVisible === true) {
-      selectData.options = res;
-    }
-  });
-  loading.value = false;
+  if (isFocus === true) {
+    selectData.options = res;
+  }
+  await nextTick();
 }, 300);
 
-const remoteMethod = (query: string) => {
+const remoteMethod = async (query: string) => {
   if (!props.remote) return;
   filterContent = query;
   loading.value = true;
-  fetchDataDebounce(query);
+  await fetchDataDebounce(query);
+  loading.value = false;
 };
 
 </script>
