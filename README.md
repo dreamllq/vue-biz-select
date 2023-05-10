@@ -1,6 +1,6 @@
 # lc-vue-biz-select
 
-异步数据选择器
+基于Select V2 虚拟列表选择器的数据选择器，不同点是此组件的数据是通过方法获取，而不是直接通过options数据传入，同时此方法也可做为remoteMethod使用
 
 ## 安装
 
@@ -51,7 +51,7 @@ const fetchData = async ()=>{
 
 | 属性名 | 说明 | 类型 | 默认值 |
 | ---- | ---- | ---- | ---- |
-| fetchData | 获取下拉选择数据 | ()=>Promise<\{value: number|string, label:string\}[]> | () => [] |
+| fetchData | 获取下拉选择数据 | (query?:string)=>Promise<\{value: number|string, label:string\}[]> | () => [] |
 | modelValue/v-model | 选中值 | 多选：string[] \| number[] ; 单选：string \| number | - |
 | placeholder | placeholder | string | 请选择 |
 | multiple | 是否多选 | boolean | false |

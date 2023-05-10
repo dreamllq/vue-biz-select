@@ -73,7 +73,7 @@ const fetchData = async ()=>{
 
 | 属性名 | 说明 | 类型 | 默认值 |
 | ---- | ---- | ---- | ---- |
-| fetchData | 获取下拉选择数据 | ()=>Promise<\{value: number|string, label:string\}[]> | () => [] |
+| fetchData | 获取下拉选择数据 | (query?:string)=>Promise<\{value: number|string, label:string\}[]> | () => [] |
 | modelValue/v-model | 选中值 | 多选：string[] \| number[] ; 单选：string \| number | - |
 | placeholder | placeholder | string | 请选择 |
 | multiple | 是否多选 | boolean | false |
