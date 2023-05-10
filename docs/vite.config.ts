@@ -16,6 +16,7 @@ export default defineConfig({
   },
   ssr: {
     noExternal: [
+      'simple-async-debounce',
       'lodash',
       'vue',
       'uuid',
